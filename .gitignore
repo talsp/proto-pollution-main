@@ -1,3 +1,4 @@
 node_modules/
+burp/
 .DS_Store
 .env
