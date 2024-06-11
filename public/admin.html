@@ -1,0 +1,59 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    <h1>Welcome to the admin page!</h1>
+    <div id="content"></div>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://localhost:3000/api/users',
+                type: 'GET',
+                success: function(response) {
+                    console.log(response)
+                    
+                    var tableHtml = '<table border="1"><tr><th>Nickname</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Admin</th></tr>';
+                    $.each(response, function(index, item) {
+                        var adminVal;
+                        if(item.admin !== undefined){
+                            adminVal = `<td>${item.admin}</td>`;
+                        }
+                        else{
+                            adminVal = `<input type="button" value="Set as admin" id="setAdmin" onclick="setAdmin('${item.id}')">`;
+                        }
+                        tableHtml += `<tr><td>${item.nickname}</td><td>${item.firstName}</td><td>${item.lastName}</td><td>${item.email}</td><td>${adminVal}</td></tr>`;
+                    });
+                    tableHtml += '</table>';
+                    $('#content').html(tableHtml);
+                },
+                error: function(error) {
+                    $('#content').html('<p>An error occurred: ' + error.responseText + '</p>');
+                }
+            });
+        });
+
+        const setAdmin = (id) =>{
+           
+            $.ajax({
+                url: 'http://localhost:3000/api/users/set-admin/'+id,
+                type: 'GET',
+                contentType: 'application/x-www-form-urlencoded',
+                success: function(response) {
+                    
+                   alert(response.status)
+                },
+                error: function(error) {
+                    alert(error.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
